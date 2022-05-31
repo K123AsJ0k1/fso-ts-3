@@ -57,21 +57,25 @@ app.get('/api/persons', (req, res) => {
         res.json(persons)
     })
 })
-/*
+
 app.get('/info', (req, res) => {
-    let html = `<div><p>Phonebook has info for ${persons.length} people</p><p>${new Date().toString()}</p></div>`
-    res.send(html)
+    Person.countDocuments().then(count => {
+        let html = `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toString()}</p></div>`
+        res.send(html)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.filter(person => person.id === id)
-    if (person.length == 0) {
-        res.status(404).end()
-    }
-    res.json(person)
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person.length == 0) {
+                res.status(404).end()
+            }
+            res.json(person)
+        })
 })
 
+/*
 const randomId = (min, max) => {
     return Math.floor(Math.random()*(max-min))+ min
 }

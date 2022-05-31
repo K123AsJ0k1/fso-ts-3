@@ -53,13 +53,11 @@ let persons = Person.find({}).then(notes => {
 */
 
 app.get('/api/persons', (req, res) => {
-    //console.log(persons)
-    //res.json(persons)
-    Person.find({}).then(notes => {
-        res.json(notes)
+    Person.find({}).then(persons => {
+        res.json(persons)
     })
 })
-
+/*
 app.get('/info', (req, res) => {
     let html = `<div><p>Phonebook has info for ${persons.length} people</p><p>${new Date().toString()}</p></div>`
     res.send(html)
@@ -77,6 +75,7 @@ app.get('/api/persons/:id', (req, res) => {
 const randomId = (min, max) => {
     return Math.floor(Math.random()*(max-min))+ min
 }
+*/
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
@@ -92,7 +91,7 @@ app.post('/api/persons', (req, res) => {
             error: 'number missing'
         })
     }
-
+    /*
     const same_name = persons.filter(person => person.name == body.name)
 
     if (same_name.length == 1) {
@@ -100,16 +99,20 @@ app.post('/api/persons', (req, res) => {
             error: 'name must be unique'
         })
     }
-    
-    const person = {
-        id: randomId(persons.length, 100000),
+    */
+
+    const person = new Person({
         name: body.name,
         number: body.number,
-    }
+    })
 
-    persons = persons.concat(person)
+    //persons = persons.concat(person)
 
-    res.json(persons)
+    person.save().then(savedPerson => {
+        Person.find({}).then(persons => {
+            res.json(persons)
+        })
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
